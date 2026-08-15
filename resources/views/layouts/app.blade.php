@@ -112,7 +112,7 @@
         @media (max-width: 768px) {
             .masthead .container { gap: 12px; grid-template-columns: auto 1fr auto; }
             .masthead .logo { justify-self: center; }
-            .masthead .logo img { max-height: 70px; }
+            .masthead .logo img { max-height: 95px; }
             .nav-toggle { display: inline-block; justify-self: start; }
             .searchbox { order: 3; grid-column: 1 / -1; justify-self: stretch; max-width: none; }
             .masthead .cart-link { margin-left: 0; }
@@ -124,7 +124,7 @@
         @media (max-width: 640px) {
             .products-grid { grid-template-columns: repeat(2, 1fr); gap: 14px; }
             footer .container { grid-template-columns: 1fr; gap: 24px; }
-            .masthead .logo img { max-height: 60px; }
+            .masthead .logo img { max-height: 85px; }
             .masthead .container { padding: 10px 14px; }
             .container { padding: 0 14px; }
             .widenav a { font-size: 13px; padding: 10px 10px; }
