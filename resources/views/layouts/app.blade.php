@@ -18,15 +18,17 @@
         a { color: #131a22; text-decoration: none; }
         img { max-width: 100%; height: auto; }
 
-        .topbar { background: #000; color: #111; font-size: 13px; padding: 8px 0; text-align: center; }
+        .topbar { background: var(--bv-orange); color: #111; font-size: 13px; padding: 8px 0; text-align: center; font-weight: 700; }
         .topbar .container { display: flex; justify-content: center; align-items: center; gap: 20px; flex-wrap: wrap; }
         .topbar a { color: #111; }
+        .topbar .topbar-msg { font-weight: 700; letter-spacing: .3px; }
 
-        .masthead { background: #131921; color: #fff; }
+        .masthead { background: #000; color: #fff; }
         .masthead .container { max-width: 1240px; margin: 0 auto; padding: 14px 20px; display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 24px; }
         .masthead .logo { justify-self: center; }
         .masthead .logo img { max-height: 110px; display: block; }
         .masthead .cart-link { justify-self: end; }
+        .nav-toggle { display: none; background: none; border: none; color: #fff; font-size: 26px; cursor: pointer; padding: 4px; line-height: 1; }
         .searchbox { display: flex; flex-direction: column; gap: 6px; max-width: 560px; justify-self: start; }
         .searchbox .search-row { display: flex; }
         .searchbox .search-input { flex: 1; min-width: 0; padding: 10px 14px; border: none; border-radius: 6px 0 0 6px; font-size: 14px; outline: none; }
@@ -44,6 +46,16 @@
         .widenav .container { max-width: 1240px; margin: 0 auto; display: flex; justify-content: center; gap: 4px; flex-wrap: wrap; }
         .widenav a { color: #fff; font-weight: 600; font-size: 14px; letter-spacing: .4px; padding: 12px 16px; display: inline-block; }
         .widenav a:hover, .widenav a.active { color: var(--bv-orange); }
+
+        .sidebar-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.5); z-index: 998; opacity: 0; visibility: hidden; transition: opacity .25s, visibility .25s; }
+        .sidebar-overlay.open { opacity: 1; visibility: visible; }
+        .sidebar { position: fixed; top: 0; left: 0; bottom: 0; width: 280px; max-width: 85vw; background: #fff; z-index: 999; transform: translateX(-100%); transition: transform .3s ease; box-shadow: 4px 0 20px rgba(0,0,0,.2); overflow-y: auto; }
+        .sidebar.open { transform: translateX(0); }
+        .sidebar .sidebar-head { background: var(--bv-dark); color: #fff; padding: 16px; display: flex; justify-content: space-between; align-items: center; }
+        .sidebar .sidebar-head img { max-height: 40px; }
+        .sidebar .sidebar-close { background: none; border: none; color: #fff; font-size: 24px; cursor: pointer; line-height: 1; }
+        .sidebar a { display: block; padding: 14px 18px; color: #131a22; font-weight: 600; font-size: 14px; border-bottom: 1px solid #f0f0f0; }
+        .sidebar a:hover, .sidebar a.active { color: var(--bv-purple); background: #f7f7f7; }
 
         main { min-height: 60vh; }
 
@@ -98,13 +110,15 @@
         }
 
         @media (max-width: 768px) {
-            .masthead .container { gap: 12px; grid-template-columns: auto 1fr; }
-            .masthead .logo { justify-self: start; }
+            .masthead .container { gap: 12px; grid-template-columns: auto 1fr auto; }
+            .masthead .logo { justify-self: center; }
             .masthead .logo img { max-height: 70px; }
+            .nav-toggle { display: inline-block; justify-self: start; }
             .searchbox { order: 3; grid-column: 1 / -1; justify-self: stretch; max-width: none; }
             .masthead .cart-link { margin-left: 0; }
             .topbar { font-size: 12px; }
             .topbar .container { gap: 10px; }
+            .widenav { display: none; }
         }
 
         @media (max-width: 640px) {
@@ -132,13 +146,14 @@
 <body>
 <div class="topbar">
     <div class="container">
-        <span>✓ Livraison et retours gratuits</span>
+        <span class="topbar-msg">✓ Livraison et retours gratuits</span>
         <a href="mailto:contact@chronolette.ma">✉ contact@chronolette.ma</a>
     </div>
 </div>
 
 <div class="masthead">
     <div class="container">
+        <button class="nav-toggle" id="navToggle" aria-label="Menu">☰</button>
         <form class="searchbox" action="{{ route('home') }}" method="GET">
             <div class="search-row">
                 <input type="search" name="q" class="search-input" placeholder="Rechercher une montre…" value="{{ request('q') }}">
@@ -152,7 +167,7 @@
             </div>
         </form>
         <a href="{{ route('home') }}" class="logo">
-            <img src="{{ asset('images/logo-site.png') }}" alt="CHRONOLETTE">
+            <img src="{{ asset('images/chronolette-logo-header-black.png') }}" alt="CHRONOLETTE">
         </a>
         <a href="{{ route('cart.index') }}" class="cart-link">
             <i class="icon-shopping-bag" style="font-size:22px;"></i>
@@ -173,6 +188,20 @@
         <a href="https://www.instagram.com/chronolette" target="_blank" rel="noopener">Instagram</a>
     </div>
 </nav>
+
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+<aside class="sidebar" id="sidebar" aria-label="Menu">
+    <div class="sidebar-head">
+        <img src="{{ asset('images/chronolette-logo-header-black.png') }}" alt="CHRONOLETTE">
+        <button class="sidebar-close" id="sidebarClose" aria-label="Fermer">✕</button>
+    </div>
+    <a href="{{ route('home') }}" class="{{ !request('sexe') && !request('categorie') ? 'active' : '' }}">Accueil</a>
+    <a href="{{ route('home', ['sexe' => 'femme']) }}" class="{{ request('sexe') === 'femme' ? 'active' : '' }}">Montres Femmes</a>
+    <a href="{{ route('home', ['sexe' => 'homme']) }}" class="{{ request('sexe') === 'homme' ? 'active' : '' }}">Montres Hommes</a>
+    <a href="{{ whatsapp_link('Bonjour CHRONOLETTE, j\'ai une question.') }}">Contact</a>
+    <a href="https://www.instagram.com/chronolette" target="_blank" rel="noopener">Instagram</a>
+    <a href="{{ route('cart.index') }}">Panier</a>
+</aside>
 
 <main>
     <div class="flash">
@@ -226,5 +255,24 @@
 </a>
 
 @stack('scripts')
+<script>
+    (function () {
+        var toggle = document.getElementById('navToggle');
+        var close = document.getElementById('sidebarClose');
+        var overlay = document.getElementById('sidebarOverlay');
+        var sidebar = document.getElementById('sidebar');
+        if (!toggle || !close || !overlay || !sidebar) return;
+
+        function open() { sidebar.classList.add('open'); overlay.classList.add('open'); document.body.style.overflow = 'hidden'; }
+        function closeSidebar() { sidebar.classList.remove('open'); overlay.classList.remove('open'); document.body.style.overflow = ''; }
+
+        toggle.addEventListener('click', open);
+        close.addEventListener('click', closeSidebar);
+        overlay.addEventListener('click', closeSidebar);
+        sidebar.addEventListener('click', function (e) {
+            if (e.target.tagName === 'A') closeSidebar();
+        });
+    })();
+</script>
 </body>
 </html>
