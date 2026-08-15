@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin\AuthController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\OrderController as AdminOrderController;
 use App\Http\Controllers\Admin\ProductController as AdminProductController;
+use App\Http\Controllers\Admin\ProfileController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ShopController;
@@ -44,6 +45,12 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
     Route::middleware([AdminAuth::class])->group(function () {
         Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
+
+        Route::prefix('profil')->name('profile.')->group(function () {
+            Route::get('/', [ProfileController::class, 'show'])->name('show');
+            Route::put('/', [ProfileController::class, 'update'])->name('update');
+            Route::put('/mot-de-passe', [ProfileController::class, 'changePassword'])->name('password');
+        });
 
         Route::prefix('produits')->name('products.')->group(function () {
             Route::get('/', [AdminProductController::class, 'index'])->name('index');
