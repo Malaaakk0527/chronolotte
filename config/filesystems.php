@@ -64,7 +64,7 @@ return [
             'driver' => 's3',
             'key' => env('SUPABASE_S3_KEY'),
             'secret' => env('SUPABASE_S3_SECRET'),
-            'region' => env('SUPABASE_S3_REGION', 'eu-west-1'),
+            'region' => env('SUPABASE_S3_REGION', 'us-east-1'),
             'bucket' => env('SUPABASE_S3_BUCKET', 'chronolette'),
             'url' => env('SUPABASE_STORAGE_URL'),
             'endpoint' => env('SUPABASE_S3_ENDPOINT'),

@@ -84,49 +84,47 @@
                         <input type="file" name="hover_image" class="form-control" accept="image/*">
                     </div>
 
-                    @if($product->exists)
-                        <div class="mb-3">
-                            <label class="form-label">Galerie d'images</label>
-                            @if($product->images->isNotEmpty())
-                                <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:12px;">
-                                    @foreach($product->images as $img)
-                                        @php
-                                            $isMain = $product->image === $img->image;
-                                            $isHover = $product->hover_image === $img->image;
-                                        @endphp
-                                        <div style="border:1px solid #dee2e6;border-radius:8px;overflow:hidden;position:relative;background:#f8f9fa;">
-                                            <img src="{{ product_image_url($img->image) }}" style="width:100%;height:80px;object-fit:cover;" alt="">
-                                            <div style="padding:6px 8px;">
-                                                <div style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:6px;">
-                                                    <span style="font-size:10px;padding:2px 6px;border-radius:10px;{{ $isMain ? 'background:#232f3e;color:#fff;' : 'background:#e9ecef;color:#666;' }}">Principale</span>
-                                                    <span style="font-size:10px;padding:2px 6px;border-radius:10px;{{ $isHover ? 'background:#232f3e;color:#fff;' : 'background:#e9ecef;color:#666;' }}">Survol</span>
-                                                </div>
-                                                <div style="display:flex;gap:4px;">
-                                                    <form action="{{ route('admin.products.setMainImage', [$product->id, $img->id]) }}" method="POST" style="flex:1;">
-                                                        @csrf
-                                                        <button type="submit" class="btn btn-sm btn-outline-dark w-100" style="font-size:11px;padding:3px 6px;">Principale</button>
-                                                    </form>
-                                                    <form action="{{ route('admin.products.setHoverImage', [$product->id, $img->id]) }}" method="POST" style="flex:1;">
-                                                        @csrf
-                                                        <button type="submit" class="btn btn-sm btn-outline-secondary w-100" style="font-size:11px;padding:3px 6px;">Survol</button>
-                                                    </form>
-                                                </div>
+                    <div class="mb-3">
+                        <label class="form-label">Galerie d'images</label>
+                        @if($product->exists && $product->images->isNotEmpty())
+                            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:12px;">
+                                @foreach($product->images as $img)
+                                    @php
+                                        $isMain = $product->image === $img->image;
+                                        $isHover = $product->hover_image === $img->image;
+                                    @endphp
+                                    <div style="border:1px solid #dee2e6;border-radius:8px;overflow:hidden;position:relative;background:#f8f9fa;">
+                                        <img src="{{ product_image_url($img->image) }}" style="width:100%;height:80px;object-fit:cover;" alt="">
+                                        <div style="padding:6px 8px;">
+                                            <div style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:6px;">
+                                                <span style="font-size:10px;padding:2px 6px;border-radius:10px;{{ $isMain ? 'background:#232f3e;color:#fff;' : 'background:#e9ecef;color:#666;' }}">Principale</span>
+                                                <span style="font-size:10px;padding:2px 6px;border-radius:10px;{{ $isHover ? 'background:#232f3e;color:#fff;' : 'background:#e9ecef;color:#666;' }}">Survol</span>
                                             </div>
-                                            <form action="{{ route('admin.products.destroyImage', $img->id) }}" method="POST" style="position:absolute;top:4px;right:4px;">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button class="btn btn-danger btn-sm p-0" style="width:20px;height:20px;line-height:20px;font-size:11px;border-radius:50%;">✕</button>
-                                            </form>
+                                            <div style="display:flex;gap:4px;">
+                                                <form action="{{ route('admin.products.setMainImage', [$product->id, $img->id]) }}" method="POST" style="flex:1;">
+                                                    @csrf
+                                                    <button type="submit" class="btn btn-sm btn-outline-dark w-100" style="font-size:11px;padding:3px 6px;">Principale</button>
+                                                </form>
+                                                <form action="{{ route('admin.products.setHoverImage', [$product->id, $img->id]) }}" method="POST" style="flex:1;">
+                                                    @csrf
+                                                    <button type="submit" class="btn btn-sm btn-outline-secondary w-100" style="font-size:11px;padding:3px 6px;">Survol</button>
+                                                </form>
+                                            </div>
                                         </div>
-                                    @endforeach
-                                </div>
-                            @else
-                                <div class="text-muted" style="font-size:13px;margin-bottom:10px;">Aucune image en galerie.</div>
-                            @endif
-                            <input type="file" name="gallery[]" class="form-control" multiple accept="image/*">
-                            <small class="text-muted">Toutes les images de la galerie apparaissent comme vignettes sur la fiche produit. Utilisez « Principale » / « Survol » pour choisir l'image affichée.</small>
-                        </div>
-                    @endif
+                                        <form action="{{ route('admin.products.destroyImage', $img->id) }}" method="POST" style="position:absolute;top:4px;right:4px;">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button class="btn btn-danger btn-sm p-0" style="width:20px;height:20px;line-height:20px;font-size:11px;border-radius:50%;">✕</button>
+                                        </form>
+                                    </div>
+                                @endforeach
+                            </div>
+                        @else
+                            <div class="text-muted" style="font-size:13px;margin-bottom:10px;">Aucune image en galerie.</div>
+                        @endif
+                        <input type="file" name="gallery[]" class="form-control" multiple accept="image/*">
+                        <small class="text-muted">Toutes les images de la galerie apparaissent comme vignettes sur la fiche produit. Utilisez « Principale » / « Survol » pour choisir l'image affichée.</small>
+                    </div>
 
                     <div class="form-check form-switch mb-3">
                         <input class="form-check-input" type="checkbox" name="active" value="1" id="active" {{ old('active', $product->exists ? $product->active : true) ? 'checked' : '' }}>

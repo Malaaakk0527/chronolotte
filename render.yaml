@@ -45,6 +45,8 @@ services:
         sync: false
       - key: SUPABASE_S3_ENDPOINT
         sync: false
+      - key: SUPABASE_S3_REGION
+        value: us-east-1
       - key: SUPABASE_S3_BUCKET
         value: chronolette
       - key: SUPABASE_STORAGE_URL
