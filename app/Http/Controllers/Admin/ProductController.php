@@ -202,7 +202,7 @@ class ProductController extends Controller
             return;
         }
 
-        if (env('SUPABASE_S3_BUCKET')) {
+        if (config('filesystems.disks.supabase.bucket')) {
             try {
                 \Illuminate\Support\Facades\Storage::disk('supabase')->delete($path);
             } catch (\Throwable) {
@@ -225,7 +225,7 @@ class ProductController extends Controller
         $filename = Str::random(20).'.'.$file->getClientOriginalExtension();
         $path = 'products/'.$filename;
 
-        if (env('SUPABASE_S3_BUCKET')) {
+        if (config('filesystems.disks.supabase.bucket')) {
             \Illuminate\Support\Facades\Storage::disk('supabase')->put($path, file_get_contents($file->getRealPath()), 'public');
 
             return $path;
