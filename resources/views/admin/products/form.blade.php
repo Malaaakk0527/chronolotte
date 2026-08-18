@@ -101,21 +101,11 @@
                                                 <span style="font-size:10px;padding:2px 6px;border-radius:10px;{{ $isHover ? 'background:#232f3e;color:#fff;' : 'background:#e9ecef;color:#666;' }}">Survol</span>
                                             </div>
                                             <div style="display:flex;gap:4px;">
-                                                <form action="{{ route('admin.products.setMainImage', [$product->id, $img->id]) }}" method="POST" style="flex:1;">
-                                                    @csrf
-                                                    <button type="submit" class="btn btn-sm btn-outline-dark w-100" style="font-size:11px;padding:3px 6px;">Principale</button>
-                                                </form>
-                                                <form action="{{ route('admin.products.setHoverImage', [$product->id, $img->id]) }}" method="POST" style="flex:1;">
-                                                    @csrf
-                                                    <button type="submit" class="btn btn-sm btn-outline-secondary w-100" style="font-size:11px;padding:3px 6px;">Survol</button>
-                                                </form>
+                                                <button type="button" class="btn btn-sm btn-outline-dark w-100" style="font-size:11px;padding:3px 6px;" onclick="postAction('{{ route('admin.products.setMainImage', [$product->id, $img->id]) }}', '{{ csrf_token() }}')">Principale</button>
+                                                <button type="button" class="btn btn-sm btn-outline-secondary w-100" style="font-size:11px;padding:3px 6px;" onclick="postAction('{{ route('admin.products.setHoverImage', [$product->id, $img->id]) }}', '{{ csrf_token() }}')">Survol</button>
                                             </div>
                                         </div>
-                                        <form action="{{ route('admin.products.destroyImage', $img->id) }}" method="POST" style="position:absolute;top:4px;right:4px;">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button class="btn btn-danger btn-sm p-0" style="width:20px;height:20px;line-height:20px;font-size:11px;border-radius:50%;">✕</button>
-                                        </form>
+                                        <button type="button" class="btn btn-danger btn-sm p-0" style="position:absolute;top:4px;right:4px;width:20px;height:20px;line-height:20px;font-size:11px;border-radius:50%;" onclick="deleteAction('{{ route('admin.products.destroyImage', $img->id) }}', '{{ csrf_token() }}')">✕</button>
                                     </div>
                                 @endforeach
                             </div>
@@ -144,6 +134,22 @@
 
 @push('scripts')
 <script>
+    function postAction(url, token) {
+        var f = document.createElement('form');
+        f.method = 'POST';
+        f.action = url;
+        f.innerHTML = '<input type="hidden" name="_token" value="' + token + '"><input type="hidden" name="_method" value="POST">';
+        document.body.appendChild(f);
+        f.submit();
+    }
+    function deleteAction(url, token) {
+        var f = document.createElement('form');
+        f.method = 'POST';
+        f.action = url;
+        f.innerHTML = '<input type="hidden" name="_token" value="' + token + '"><input type="hidden" name="_method" value="DELETE">';
+        document.body.appendChild(f);
+        f.submit();
+    }
     function toggleNewCategory(select) {
         var wrap = document.getElementById('new_category_wrap');
         var input = document.getElementById('new_category');
