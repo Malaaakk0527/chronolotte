@@ -30,6 +30,19 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Run Migrations & Seed On First Boot
+    |--------------------------------------------------------------------------
+    |
+    | When enabled, the application runs pending migrations and the database
+    | seeder the first time it boots on a stateless host (e.g. Wasmer Edge)
+    | where there is no entrypoint script to run them beforehand.
+    |
+    */
+
+    'migrate_on_start' => env('MIGRATE_ON_START', true),
+
+    /*
+    |--------------------------------------------------------------------------
     | Application Debug Mode
     |--------------------------------------------------------------------------
     |
