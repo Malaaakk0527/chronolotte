@@ -196,13 +196,20 @@ class ProductController extends Controller
         return $category->id;
     }
 
+    private function usesSupabaseDisk(): bool
+    {
+        $disk = config('filesystems.disks.supabase', []);
+
+        return ! empty($disk['bucket']) && ! empty($disk['key']) && ! empty($disk['secret']) && ! empty($disk['endpoint']);
+    }
+
     private function deleteStoredFile(?string $path): void
     {
         if (! $path) {
             return;
         }
 
-        if (config('filesystems.disks.supabase.bucket')) {
+        if ($this->usesSupabaseDisk()) {
             try {
                 \Illuminate\Support\Facades\Storage::disk('supabase')->delete($path);
             } catch (\Throwable) {
@@ -225,13 +232,18 @@ class ProductController extends Controller
         $filename = Str::random(20).'.'.$file->getClientOriginalExtension();
         $path = 'products/'.$filename;
 
-        if (config('filesystems.disks.supabase.bucket')) {
+        if ($this->usesSupabaseDisk()) {
             \Illuminate\Support\Facades\Storage::disk('supabase')->put($path, file_get_contents($file->getRealPath()), 'public');
 
             return $path;
         }
 
-        $file->move(public_path('products'), $filename);
+        $dir = public_path('products');
+        if (! is_dir($dir)) {
+            @mkdir($dir, 0777, true);
+        }
+
+        $file->move($dir, $filename);
 
         return $path;
     }
