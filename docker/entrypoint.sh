@@ -7,6 +7,8 @@ cd /var/www/html
 if [ "${MIGRATE_ON_START:-true}" = "true" ]; then
     echo "=== Migration de la base ==="
     php artisan migrate --force --no-interaction
+    echo "=== Seed initial (idempotent) ==="
+    php artisan db:seed --force --no-interaction
 fi
 
 exec /usr/bin/supervisord -c /etc/supervisor.d/conf.d/supervisord.conf

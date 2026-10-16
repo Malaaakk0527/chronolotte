@@ -15,6 +15,12 @@ class DatabaseSeeder extends Seeder
     {
         $this->seedAdmin();
         $this->seedCategories();
+
+        if (Product::count() > 0) {
+            $this->command?->info('Produits déjà présents, import ignoré.');
+            return;
+        }
+
         $this->importProductsFromHtml();
     }
 
